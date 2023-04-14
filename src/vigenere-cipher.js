@@ -20,13 +20,50 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(direct = true){
+    this.direct = direct
+    this.al = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  
+  encrypt(mes, key) {
+    
+    if(!mes || !key) throw new Error("Incorrect arguments!")
+    
+    mes = mes.toUpperCase()
+    key = key.toUpperCase()
+    let res = new Array(mes.length), k = 0;
+   
+    for (let i = 0; i < mes.length; i++) {
+      const mi = this.al.indexOf(mes[i])
+      if (mi == -1) res[i] = mes[i]
+      else {
+        if (k == key.length) k = 0
+        const ki = this.al.indexOf(key[k++])
+        res[i] = this.al[(mi + ki) % this.al.length]
+      }
+    }
+
+    return this.direct ? res.join('') : res.reverse().join('')
+  }
+  
+  decrypt(mes, key) {
+
+    if(!mes || !key) throw new Error("Incorrect arguments!")
+    
+    key = key.toUpperCase()
+    let res = new Array(mes.length), k = 0;
+   
+    for (let i = 0; i < mes.length; i++) {
+      const mi = this.al.indexOf(mes[i])
+      if (mi == -1) res[i] = mes[i]
+      else {
+        if (k == key.length) k = 0
+        const ki = this.al.indexOf(key[k++])
+        res[i] = this.al[(mi - ki + this.al.length) % this.al.length]
+      }
+    }
+
+    return this.direct ? res.join('') : res.reverse().join('')
   }
 }
 
